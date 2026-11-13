@@ -4,13 +4,11 @@ If Labs is enabled in the [Element config](config.md), you can enable some of th
 to `Settings->Labs`. This list is non-exhaustive and subject to change, chat in
 [#element-web:matrix.org](https://matrix.to/#/#element-web:matrix.org) for more information.
 
+If a labs features gets more stable, it _may_ be promoted to a beta feature
+(see [Betas](https://github.com/element-hq/element-web/blob/develop/docs/betas.md)).
+
 **Be warned! Labs features are not finalised, they may be fragile, they may change, they may be
 dropped. Ask in the room if you are unclear about any details here.**
-
-## Submit Abuse Report to Moderators [MSC3215](https://github.com/matrix-org/matrix-doc/pull/3215) support (`feature_report_to_moderators`)
-
-A new version of the "Report" dialog that lets users send abuse reports directly to room moderators,
-if the room supports it.
 
 ## Render LaTeX maths in messages (`feature_latex_maths`)
 
@@ -21,44 +19,18 @@ Enables rendering of LaTeX maths in messages using [KaTeX](https://katex.org/). 
 Allows you to pin messages in the room. To pin a message, use the 3 dots to the right of the message
 and select "Pin".
 
-## Custom status (`feature_custom_status`)
+## Jump to date (`feature_jump_to_date`)
 
-An experimental approach for supporting custom status messages across DMs. To set a status, click on
-your avatar next to the message composer.
+Note: This labs feature is only visible when your homeserver has MSC3030 enabled
+(in Synapse, add `experimental_features` -> `msc3030_enabled` to your
+`homeserver.yaml`) which means `GET /_matrix/client/versions` responds with
+`org.matrix.msc3030` under the `unstable_features` key.
 
-## Custom tags (`feature_custom_tags`)
+Adds a dropdown menu to the date separator headers in the timeline which allows
+you to jump to last week, last month, the beginning of the room, or choose a
+date from the calendar.
 
-An experimental approach for dealing with custom tags. Custom tags will appear in the bottom portion
-of the community filter panel.
-
-Setting custom tags is not supported by Element.
-
-## Render simple counters in room header (`feature_state_counters`)
-
-Allows rendering of labelled counters above the message list.
-
-Once enabled, send a custom state event to a room to set values:
-
-1. In a room, type `/devtools` to bring up the devtools interface
-2. Click "Send Custom Event"
-3. Toggle from "Event" to "State Event"
-4. Set the event type to: `re.jki.counter` and give it a unique key
-5. Specify the content in the following format:
-
-```
-{
-    "link": "",
-    "severity": "normal",
-    "title": "my counter",
-    "value": 0
-}
-```
-
-That's it. Now should see your new counter under the header.
-
-## Multiple integration managers (`feature_many_integration_managers`)
-
-Exposes a way to access all the integration managers known to Element. This is an implementation of [MSC1957](https://github.com/matrix-org/matrix-doc/pull/1957).
+Also adds the `/jumptodate 2022-01-31` slash command.
 
 ## New ways to ignore people (`feature_mjolnir`)
 
@@ -86,71 +58,69 @@ present in the room. The Bridge info tab pulls information from the `m.bridge` s
 bridges are not expected to be compatible, and users should not rely on this
 tab as the single source of truth just yet.
 
-## Presence indicator in room list (`feature_presence_in_room_list`)
+## Live location sharing (`feature_location_share_live`) [In Development]
 
-This adds a presence indicator in the room list next to DM rooms where the other
-person is online.
+Enables sharing your current location to the timeline, with live updates.
 
-## Custom themes (`feature_custom_themes`)
+## Video rooms (`feature_video_rooms`) [Beta]
 
-Custom themes are possible through Element's [theme support](./theming.md), though
-normally these themes need to be defined in the config for Element. This labs flag
-adds an ability for end users to add themes themselves by using a URL to the JSON
-theme definition.
+Enables support for creating video rooms, which are persistent video chats that users can jump in and out of.
 
-For some sample themes, check out [aaronraimist/element-themes](https://github.com/aaronraimist/element-themes).
+## Element Call video rooms (`feature_element_call_video_rooms`) [In Development]
 
-## Message preview tweaks
+Enables support for video rooms that use Element Call rather than Jitsi, and causes the 'New video room' option to create Element Call video rooms rather than Jitsi ones.
 
-To enable message previews for reactions in all rooms, enable `feature_roomlist_preview_reactions_all`.
-To enable message previews for reactions in DMs, enable `feature_roomlist_preview_reactions_dms`, ignored when it is enabled for all rooms.
+This flag will not have any effect unless `feature_video_rooms` is also enabled.
 
-## Communities v2 prototyping (`feature_communities_v2_prototypes`) [In Development]
+## MatrixRTC call slots (`feature_matrixrtc_slots`) [In Development]
 
-**This is a highly experimental implementation for parts of the communities v2 experience.** It does not
-represent what communities v2 will look/feel like and can/will change without notice. Due to the early
-stages this feature is in and the requirement for a compatible homeserver, we will not be accepting issues
-or feedback for this functionality at this time.
+Only allows starting or joining Element Call calls with a valid slot state event in the room.
 
-## Dehydrated devices (`feature_dehydration`)
+## Enable the notifications panel in the room header (`feature_notifications`)
 
-Allows users to receive encrypted messages by creating a device that is stored
-encrypted on the server, as described in [MSC2697](https://github.com/matrix-org/matrix-doc/pull/2697).
+Unreliable in encrypted rooms.
 
-## Do not disturb (`feature_dnd`)
+## Knock rooms (`feature_ask_to_join`) [In Development]
 
-Enables UI for turning on "do not disturb" mode for the current device. When DND mode is engaged, popups
-and notification noises are suppressed. Not perfect, but can help reduce noise.
+Enables knock feature for rooms. This allows users to ask to join a room.
 
-## Hidden read receipts (`feature_hidden_read_receipts`)
+## Exclude insecure devices when sending/receiving messages (`feature_exclude_insecure_devices`)
 
-Enables sending hidden read receipts as per [MSC2285](https://github.com/matrix-org/matrix-doc/pull/2285)
+Do not send or receive messages to/from devices that are not properly verified. Users with unverified devices will not
+receive your messages at all on those devices, and if they send messages, you will not be able to read them, but you
+will be aware that a message exists.
 
-## New layout switcher (with message bubbles) (`feature_new_layout_switcher`)
+## Encrypted state events (MSC4362) (`feature_msc4362_encrypted_state_events`)
 
-Adds a "Message layout" section under `Settings -> Appearance`, where the user can select their preferred message layout (e.g. IRC or Modern). Additionally, adds a new "Message bubbles" layout.
+Encrypt most of the state events in the room, including the room name and topic.
 
-## Pseudonymous Analytics opt-in (`feature_pseudonymous_analytics_opt_in`)
+WARNING: this means that users joining a room who do not have access to its history will not be able to see the name or
+topic of the room, or any other room state information. It also means the room name and topic are not available before
+joining a room.
 
-Opts in to collection of pseudonymous analytics data via Posthog. See https://github.com/matrix-org/matrix-react-sdk/pull/6495
+## New notifications settings (`feature_notification_settings2`) [Beta]
 
-## Polls (`feature_polls`) [In Development]
+Replaces the legacy notification settings with a new one to manage push rules.
 
-Polls are a way to gauge interest from your community about a certain topic with a simple voting mechanic
-within the message timeline. Note that this feature is currently under active development and therefore is
-entirely incomplete and may not work at all - it is not recommended for general use at this time.
+## User status (`feature_user_status`)
 
-Bug reports, feature requests, etc are not currently accepted for this feature flag. A later stage of
-development will provide opportunities for feedback.
+Enables setting a status message in your profile and to be able to view other's statuses.
+Requires [MSC4429](https://github.com/matrix-org/matrix-spec-proposals/pull/4429) and [MSC4426](https://github.com/matrix-org/matrix-spec-proposals/pull/4426).
 
-## Maximised widgets (`feature_maximised_widgets`) [In Development]
+**Warning** This feature has options which are not backwards compatible, disabling
+it may have unintended consequences.
 
-Maximised widgets provide a room layout in which a widget is (temporarily) the primary focus of the room. The whole chat area is then used for the widget. The chat is moved into the right panel.
+## Log in with QR (`feature_login_with_qr`)
 
-Note that this feature is currently under active development and therefore is
-entirely incomplete and may not work at all - it is not recommended for general use at this time.
+Enables logging in to Element Web/Desktop by using Element X to scan a QR code.
+Requires server support, based on the v2024 edition of [MSC4108](https://github.com/matrix-org/matrix-spec-proposals/pull/4108).
+Can only be configured via config.json, as labs flags cannot be set until after login, and are cleared on log out. The UI option is disabled.
+Note, this does not affect the existing `Link new device` flow using the same MSC.
 
-## Metaspaces (`feature_spaces_metaspaces`) [In Development]
+## URL Preview Bundle (MSC4095) (`feature_msc4095_url_preview_bundle`)
 
-Metaspaces are automatically populated spaces you can enable in your Space panel.
-By default, you'll have Home or All rooms, but you can opt in to a People, Favourites, and Other Rooms metaspace too.
+Attaches URL preview information generated by the homeserver on messages sent.
+
+## Element Call React Component (`feature_element_call_react`)
+
+Renders Element Call as a React component instead of a widget.
